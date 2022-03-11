@@ -10,6 +10,9 @@
 #include <glew.h>
 #define GLFW_INCLUDE_NONE
 #include <glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -172,6 +175,11 @@ public:
     }
 };
 
+class Camera
+{
+
+};
+
 int main()
 {
     // glfw: initialize and configure
@@ -202,47 +210,47 @@ int main()
 
     /******* Custom shader class to load in shaders, and functions to use and delete the shader program *******/
     Shader shader = Shader("./source.vert", "./source.frag");
-    ObjectData cube = ObjectData("./soccerball.obj");
+    //ObjectData cube = ObjectData("./soccerball.obj");
 
     /******* Added RGB values to vertices array, get's passed to vertex shader throuh attributes *******/
     // set up vertex data (and buffer(s)) and configure vertex attributes
     // ------------------------------------------------------------------
-    //float vertices[] = 
-    //{
-    //    -0.5f, -.25f, 0.0f, 0.0f, 0.0f, 1.0f,  // left  
-    //     0.5f, -.75f, 0.0f, 0.0f, 0.0f, 1.0f,  // right 
-    //     0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  // top   
+    float vertices[] = 
+    {
+        -0.5f, -.25f, 0.0f, 0.0f, 0.0f, 1.0f,  // left  
+         0.5f, -.75f, 0.0f, 0.0f, 0.0f, 1.0f,  // right 
+         0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f,  // top   
 
-    //    -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.3f,  // left  
-    //     0.5f, -0.5f, 0.0f, 0.0f, 0.3f, 0.0f,  // right 
-    //     0.0f, -1.0f, 0.0f, 0.3f, 0.0f, 0.0f   // bottom
-    //};
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 0.3f,  // left  
+         0.5f, -0.5f, 0.0f, 0.0f, 0.3f, 0.0f,  // right 
+         0.0f, -1.0f, 0.0f, 0.3f, 0.0f, 0.0f   // bottom
+    };
 
-    ///******* Used https://learnopengl.com/Getting-started/Hello-Triangle for assistance implementing EBO *******/
-    ///******* Added EBO functionality *******/
-    //int indices[] =
-    //{
-    //    0, 1, 2,
-    //    3, 4, 5
-    //};
+    /******* Used https://learnopengl.com/Getting-started/Hello-Triangle for assistance implementing EBO *******/
+    /******* Added EBO functionality *******/
+    int indices[] =
+    {
+        0, 1, 2,
+        3, 4, 5
+    };
 
     //////////////////////////////////////TEST
-    for (int x = 0; x < cube.indices.size(); x++)
-    {
-        std::cout << cube.indices[x] << std::endl;
-    }
+    //for (int x = 0; x < cube.indices.size(); x++)
+    //{
+    //    std::cout << cube.indices[x] << std::endl;
+    //}
 
-    //return 0;
+    ////return 0;
 
-    float* vertices = &cube.vertices[0];
-    int* indices = &cube.indices[0];
+    //float* vertices = &cube.vertices[0];
+    //int* indices = &cube.indices[0];
     ///////////////////////////////////////////////TEST END
 
     unsigned int EBO;
     glGenBuffers(1, &EBO);
 
-    //unsigned int numVertices = sizeof(vertices) / 3;
-    unsigned int numVertices = cube.vertices.size() / 3;
+    unsigned int numVertices = sizeof(vertices) / 3;
+    //unsigned int numVertices = cube.vertices.size() / 3;
 
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -251,13 +259,13 @@ int main()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) , vertices, GL_STATIC_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, cube.vertices.size() * sizeof(float), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices) , vertices, GL_STATIC_DRAW);
+    //glBufferData(GL_ARRAY_BUFFER, cube.vertices.size() * sizeof(float), vertices, GL_STATIC_DRAW);
 
     /******* Added bindings for EBO *******/
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, cube.indices.size() * sizeof(int), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, cube.indices.size() * sizeof(int), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
